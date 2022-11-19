@@ -1,7 +1,14 @@
 const textField = document.querySelectorAll('.textfield')
 const inputs = document.querySelectorAll('.input')
+var titles = document.querySelectorAll('.title')
 var problemas = []
 
+//class of objects
+class RequiredFildeException {
+    constructor() {
+        this.name = "RequiredFildeException"
+    }
+}
 class User{
     constructor(valorGasto, cliques, pageV, cPM,  cTR){
         this.valorGasto = valorGasto
@@ -11,11 +18,20 @@ class User{
         this.cPM = cPM
     }
 }
+
+//main
 function start(){
     var botaoGargalo = document.querySelector('.btn')
-    exception()
+    onlyNumber()
+    changeColorOnClick(textField, titles)
     botaoGargalo.addEventListener('click', () =>{
-        if(exceptionCampoObrigatorio())handleResolverGargalo()
+        try {
+            originalColor(titles)
+            testEmptyField()
+            handleResolverGargalo()
+        } catch (e) {
+            changeColorError(inputs, titles)
+        }
     })
 }
 
@@ -69,7 +85,8 @@ function gargalo(user){
     }
 }
 
-function exception(){
+//Restrictions
+function onlyNumber(){
     for(let i = 0; i < textField.length; i++){
         textField[i].addEventListener("keypress", function(e){
             const keyCode = (e.keyCode ? e.keyCode : e.wich)
@@ -80,13 +97,33 @@ function exception(){
     }
 }
 
-function exceptionCampoObrigatorio(){
+function testEmptyField(){
     for(let i = 0; i < inputs.length; i++){
         if(inputs[i].value == ""){
-            return false;
+            throw new RequiredFildeException()
         }
     }
-    return true;
+}
+
+//Change colors
+function changeColorError(onError, onChange){
+    for(let i = 0; i < onError.length; i++){
+        if(onError[i].value == ""){
+            onChange[i].style.color = 'red'
+        }
+    }
+}
+function originalColor(elements){
+    for(let i = 0; i < elements.length; i++){
+        elements[i].style.color = 'white'
+    }
+}
+function changeColorOnClick(onClick, onChange){
+    for(let i = 0; i < onClick.length; i++){
+        onClick[i].addEventListener('click', () =>{
+            onChange[i].style.color = 'white'
+        })
+    }
 }
 
 start()
